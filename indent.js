@@ -7,8 +7,6 @@ var indent = function(str){
   var maxTagLength = 8;
   var afterClosed = true;
   var inlineElements = "b big i small tt abbr acronym cite code dfn em kbd strong samp var a bdo br img map object q script span sub sup button input label select textarea".split(' ');
-  var inlineElement = false;
-  var voidElement = false;
   var voidElements = "area base br col command embed hr img input keygen link meta param source track wbr".split(' ');
   var checkTags = function(tag, tags){
     for (var i = tags.length - 1; i >= 0; i--) {
@@ -27,8 +25,9 @@ var indent = function(str){
       var closingTag = (str[loc+1] == '/');
       var tagStart = closingTag ? 2 : 1;
       var tagName = getElementTag(loc, str);
+      var inlineElement = checkTags(tagName, inlineElements);
       carCount++;
-      inlineElement = checkTags(tagName, inlineElements);
+
       if(closingTag && !inlineElement){
         depth--;
         var tab = '';
@@ -50,13 +49,15 @@ var indent = function(str){
         newLoc--;
       }
       var tagName = getElementTag(newLoc, str);
+      var inlineElement = checkTags(tagName, inlineElements);
       carCount--;
+      
       if(voidElement){
         voidElement = false;
       }else if(selfClosing){
         depth--;
       }
-      if((str[loc+1] == '<' && str[loc+2] == '/') || checkTags(tagName, inlineElements)){
+      if((str[loc+1] == '<' && str[loc+2] == '/') || inlineElement){
         out = out+str[loc];
       }else{
         var tab = '';
