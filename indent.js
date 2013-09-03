@@ -18,23 +18,17 @@ var indent = function(str){
     }
     return false;
   };
-
   var getElementTag = function(loc, str){
     return str.slice((loc+tagStart),(loc+maxTagLength+tagStart)).split(/\s|\n|\>/).shift();
   }
-
   str = str.replace(/(\n|\r)\s*\</g,"<").replace(/(\n|\r)/g," ").replace(/\s+\</g,"<").replace(/\s+/g," ");
-
   while(loc < str.length){
-
     if(str[loc] == '<'){
       var closingTag = (str[loc+1] == '/');
       var tagStart = closingTag ? 2 : 1;
       var tagName = getElementTag(loc, str);
       carCount++;
-
       inlineElement = checkTags(tagName, inlineElements);
-
       if(closingTag && !inlineElement){
         depth--;
         var tab = '';
@@ -47,28 +41,21 @@ var indent = function(str){
           depth++;
         }
       }
-
       out = out+str[loc];
       afterClosed = false;
     }else if(str[loc] == '>'){
       var selfClosing = (str[loc-1] == '/');
-      
-
       var newLoc = loc;
       while(!/\</.test(str[newLoc])){
         newLoc--;
       }
       var tagName = getElementTag(newLoc, str);
-      console.log("TAG: "+tagName);
-
       carCount--;
-
       if(voidElement){
         voidElement = false;
       }else if(selfClosing){
         depth--;
       }
-
       if((str[loc+1] == '<' && str[loc+2] == '/') || checkTags(tagName, inlineElements)){
         out = out+str[loc];
       }else{
@@ -83,7 +70,6 @@ var indent = function(str){
           loc++;
         }
       }
-
       out = out+str[loc];
       afterClosed = false;
     }
