@@ -1,3 +1,5 @@
+// takes a string of html code and tries to tab it properly
+// very basic and will break with bad html
 var indent = function(str){
   var tabSize = 2;
   var loc = 0;
