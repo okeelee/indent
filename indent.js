@@ -27,7 +27,7 @@ var indent = function(str){
   }
 
   str = str.replace(/(\n|\r)\s*\</g,"<").replace(/(\n|\r)/g," ").replace(/\s+\</g,"<").replace(/\s+/g," ");
-  while(loc < str.length-1){
+  while(loc < str.length){
     if(str[loc] == '<'){
       carCount++;
       if(carCount < 2){
@@ -83,7 +83,9 @@ var indent = function(str){
           loc++;
         }
       }
-      out = out+str[loc];
+      if(str[loc]){
+        out = out+str[loc];
+      }
       afterClosed = false;
     }
     loc++;
