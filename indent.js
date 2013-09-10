@@ -81,7 +81,7 @@ var indentHtml = function(str){
 
         if(voidElement){
           voidElement = false;
-        }else if(selfClosing){
+        }else if(selfClosing && !inlineElement){
           depth--;
         }
         if((str[loc+1] == '<' && str[loc+2] == '/') || inlineElement){
