@@ -1,7 +1,6 @@
 // takes a string of html code and tries to tab it properly
 // very basic and will break with bad html
-// TODO: ignore javascript and css (will need to change the replace at the begining)
-//   maybe remove line breaks as we step over the html instead of in the begining?
+// TODO: remove the dpeth var and just use the tagStack
 // TODO: handle single line empty divs as inline - EX: <div class="something"></div>
 var indentHtml = function(str){
   var tabSize = 2;
