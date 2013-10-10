@@ -140,7 +140,7 @@ var indentHtml = function(str){
       }
       if(str[loc] && str[loc] == '<'){
         loc--; // back it up to catch the '<'
-      }else{
+      }else if(str[loc]){
         out = out+str[loc];
       }
       afterClosed = false;
