@@ -9,7 +9,7 @@ var indentHtml = function(str){
   var tagStack = [];
   var carCount = 0;
   var out = "";
-  var afterClosed = true;
+  var inTag = false;
   var lastWasInline = false;
   var inlineElements = "b big i small tt abbr acronym cite code dfn em kbd strong samp var a bdo br img map object q span sub sup button input label textarea r:property".split(' '); // removed from list: select script
   var voidElements = "area base br col command embed hr img input keygen link meta param source track wbr".split(' ');
@@ -80,7 +80,7 @@ var indentHtml = function(str){
         }
       }
       out = out+str[loc];
-      afterClosed = false;
+      inTag = true;
     }else if(str[loc] == '>'){
       carCount--;
       out = out+str[loc];
@@ -125,7 +125,7 @@ var indentHtml = function(str){
         }else{
           out = out+"\n"+getTab();
         }
-        afterClosed = true;
+        inTag = false;
       }
     }else{
       if(!checkIgnored(tagStack)){
@@ -134,16 +134,16 @@ var indentHtml = function(str){
           loc++;
           removedOne = true;
         }
-        if((lastWasInline || (!afterClosed && (str[loc+1] != '<'))) && removedOne){
+        if(removedOne && !(inTag && str[loc] == '>')){
           out = out+" ";
         }
       }
-      if(str[loc] && str[loc] == '<'){
+      if(str[loc] && (str[loc] == '<' || str[loc] == '>')){
         loc--; // back it up to catch the '<'
-      }else if(str[loc]){
+      }else{
         out = out+str[loc];
       }
-      afterClosed = false;
+      // inTag = false;
     }
     loc++;
   }
