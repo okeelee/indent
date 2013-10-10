@@ -1,6 +1,6 @@
 // takes a string of html code and tries to tab it properly
 // very basic and will break with bad html
-// TODO: remove the dpeth var and just use the tagStack
+// TODO: remove the depth var and just use the tagStack
 // TODO: handle single line empty divs as inline - EX: <div class="something"></div>
 var indentHtml = function(str){
   var tabSize = 2;
@@ -47,7 +47,6 @@ var indentHtml = function(str){
     return tab;
   }
 
-  str = str.replace(/\s+\</g,"<");//.replace(/\s+/g," ");
   while(loc < str.length){
     if(str[loc] == '<'){
       carCount++;
@@ -78,8 +77,6 @@ var indentHtml = function(str){
           }
 
           lastWasInline = inlineElement;
-        }else if(closingTag){
-          out = out+"\n"+getTab();
         }
       }
       out = out+str[loc];
@@ -113,6 +110,16 @@ var indentHtml = function(str){
         }else if(selfClosing && !inlineElement && !noFormatting){
           depth--;
         }
+
+        var removedOne = false; 
+        while(/\s|\n|\r/.test(str[loc+1])){
+          loc++;
+          removedOne = true;
+        }
+        if(inlineElement && removedOne){
+          out = out+" ";
+        }
+
         if((str[loc+1] == '<' && str[loc+2] == '/') || inlineElement || noFormatting){
           // do nothing
         }else{
@@ -121,12 +128,19 @@ var indentHtml = function(str){
         afterClosed = true;
       }
     }else{
-      if(afterClosed && !checkIgnored(tagStack)){
+      if(!checkIgnored(tagStack)){
+        var removedOne = false; 
         while(/\s|\n|\r/.test(str[loc])){
           loc++;
+          removedOne = true;
+        }
+        if((lastWasInline || (!afterClosed && (str[loc+1] != '<'))) && removedOne){
+          out = out+" ";
         }
       }
-      if(str[loc]){
+      if(str[loc] && str[loc] == '<'){
+        loc--; // back it up to catch the '<'
+      }else{
         out = out+str[loc];
       }
       afterClosed = false;
